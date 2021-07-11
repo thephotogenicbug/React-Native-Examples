@@ -3,33 +3,49 @@ import React,{useState} from 'react';
 import { StyleSheet, Text, View, TextInput, Button, ScrollView, FlatList } from 'react-native';
 import TextItem from './Components/TextItem';
 import InputText from './Components/TextInput';
-export default function App() {
 
+
+
+export default function App() {
   const [inputText, processText] = useState([]);
+  const [isAddMode, setIsAddMode] = useState(false);
+  console.log('RE-RENDERING COMPONENT');
+  console.log(inputText);
 
 
    // Add Function 
   const AddText = textTitle =>{
+    if(textTitle.length === 0){
+      return;
+    }
     processText(currentText => [
       ...currentText,                                          // anonymous function  always works
       {id: Math.random().toString(), value : textTitle}
     ]); 
+    setIsAddMode(false);
    // console.log(enteredText);
   };
 
 
    // Delete Function
   const DeleteText = textId => {
+    console.log('To be deleted' + textId);
+    console.log(inputText);
     processText(currentText =>{
          return currentText.filter( (text) => text.id !== textId);
       });
   }
 
+   const Cancle = () =>{
+     setIsAddMode(false);
+   };
+
 
   
   return (
     <View style={styles.screen}>
-       <InputText  onAddText={AddText} />
+       <Button title="Add New Text" onPress={()=> setIsAddMode(true)}   />
+       <InputText visible={isAddMode} onAddText={AddText} onCancle={Cancle} />
 
 
       <FlatList 
@@ -43,7 +59,7 @@ export default function App() {
       } 
       />
 
-      
+
       <StatusBar style="auto" />
     </View>
  
@@ -54,13 +70,10 @@ export default function App() {
 
 const styles = StyleSheet.create({
   screen:{
-    padding:50,
+    padding:20,
     marginTop:250
   },
   
-
-
-
 });
 
 
