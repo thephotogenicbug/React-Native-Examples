@@ -1,91 +1,67 @@
 import { StatusBar } from 'expo-status-bar';
 import React,{useState} from 'react';
 import { StyleSheet, Text, View, TextInput, Button, ScrollView, FlatList } from 'react-native';
-
+import TextItem from './Components/TextItem';
+import InputText from './Components/TextInput';
 export default function App() {
 
-  const [enteredText, setEnteredGoal] = useState('');
   const [inputText, processText] = useState([]);
 
 
-  const goalInputHandler = (enteredText) =>{
-    setEnteredGoal(enteredText);
-  };
-
-  const addTextHandler = () =>{
+   // Add Function 
+  const AddText = textTitle =>{
     processText(currentText => [
       ...currentText,                                          // anonymous function  always works
-      {id: Math.random().toString(), value : enteredText}]);  // 
-
-
-    //processText([...inputText, enteredText]); // spread operator
+      {id: Math.random().toString(), value : textTitle}
+    ]); 
    // console.log(enteredText);
   };
 
 
+   // Delete Function
+  const DeleteText = textId => {
+    processText(currentText =>{
+         return currentText.filter( (text) => text.id !== textId);
+      });
+  }
+
+
+  
   return (
     <View style={styles.screen}>
-       {/* child one */}
-      <View style={styles.inputContainer}>
+       <InputText  onAddText={AddText} />
 
-       <TextInput placeholder="Enter text here" 
-       style={styles.textInput}                    // react native stylesheet
-       onChangeText={goalInputHandler}            // onChangeText execute function on keyStroke
-       value={enteredText}                       // binding the value property  
-       />
-       <Button title="ADD" onPress={addTextHandler} />
 
-      </View>
-       {/* child one ends */}
-     
-
-      {/* child two */}
       <FlatList 
       keyExtractor={(item, index) => item.id}
       data={inputText} 
-      renderItem={itemData =>(
-        <View style={styles.listItem}>
-        <Text>{itemData.item.value}</Text>
-        </View>
-      )}
-
+      renderItem={itemData => <TextItem 
+        id={itemData.item.id} 
+        onDelete={DeleteText} 
+        title={itemData.item.value} 
+        />
+      } 
       />
-      {/* child two ends */}
 
       
       <StatusBar style="auto" />
-
     </View>
  
   );
 }
 
+
+
 const styles = StyleSheet.create({
   screen:{
     padding:50,
     marginTop:250
+  },
+  
 
-    
-  },
-  inputContainer:{
-  flexDirection: 'row', 
-  justifyContent:'space-between', 
-  alignItems:'center'
-},
-  textInput:{
-    width:'80%', 
-    borderColor:'black', 
-    borderWidth: 1, 
-    padding: 10
-  },
-  listItem:{
-    padding:10,
-    marginVertical:10,
-    backgroundColor:'#ccc',
-    borderColor:'black',
-    borderWidth:1
-  }
 
 
 });
 
+
+   //processText([...inputText, enteredText]); // spread operator
